@@ -1,0 +1,28 @@
+# Create IAM users
+resource "aws_iam_user" "users" {
+  for_each = {
+   for user in local.users:
+   user.first_name => user
+  }
+
+  name = lower("${substr(each.value.first_name, 0, 1)}.${each.value.last_name}")
+  path = "/users/"
+
+  tags = {
+    "DisplayName" = "${each.value.first_name} ${each.value.last_name}"
+    "Department" = each.value.department
+    "JobTitle" = each.value.job_title
+  }
+}
+
+# Create IAM user login profile (password)
+resource "aws_iam_user_login_profile" "user_login_profiles" {
+  for_each = aws_iam_user.users
+
+  user    = each.value.name
+  password_reset_required = true
+  password_length = 10
+  lifecycle {
+    ignore_changes = [password_length, password_reset_required]
+  }
+}
