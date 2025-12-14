@@ -10,5 +10,6 @@ terraform {
 
     # When Terraform uploads your state file (terraform.tfstate) to the S3 bucket, Amazon S3 encrypts it before saving it to the disk. It decrypts it automatically when Terraform needs to read it.
     encrypt        = true
+    
   }
 }
